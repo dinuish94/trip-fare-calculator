@@ -16,7 +16,7 @@ import java.util.Map;
 import static java.lang.String.format;
 import static org.company.trip.fare.calculator.constant.TripStatus.CANCELLED;
 import static org.company.trip.fare.calculator.constant.TripStatus.COMPLETED;
-import static org.company.trip.fare.calculator.core.TripFareCalculator.calculateCompleteTripFare;
+import static org.company.trip.fare.calculator.core.TripFareCalculator.calculateTripFare;
 import static org.company.trip.fare.calculator.util.DurationCalculator.calculateDuration;
 
 public class TripMapper {
@@ -49,14 +49,14 @@ public class TripMapper {
     }
 
     public void mapCompleteTrip(Tap start, Tap end) {
-        Double fare = calculateCompleteTripFare(start.getStopId(), end.getStopId());
+        Double fare = calculateTripFare(start.getStopId(), end.getStopId());
         long duration = calculateDuration(start.getDateTimeUTC(), end.getDateTimeUTC());
         Trip trip = mapTripData(start, end, fare, duration, getTripStatus(start, end));
         trips.add(trip);
     }
 
     public void mapIncompleteTrip(Tap start) {
-        Double fare = calculateCompleteTripFare(start.getStopId());
+        Double fare = TripFareCalculator.calculateTripFare(start.getStopId());
         Trip trip = mapTripData(start, null, fare, 0, TripStatus.INCOMPLETE);
         trips.add(trip);
     }
