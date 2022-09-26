@@ -39,3 +39,13 @@ Status
 - Run `mvn clean install` in the root folder
 - Run `java -jar target/trip-fare-calculator-1.0-SNAPSHOT-jar-with-dependencies.jar` in the root folder to run the application
 - Output csv can be found in the root folder as well once the application has run successfully
+
+**NOTE:**
+
+- If new tap data are to be added, add them to the /resources/taps.csv
+- If new fare data are to be added, add them to the /resources/fares.csv
+
+### Assumptions
+
+- There cannot be a Tap Type 'OFF' record without an 'ON' record
+- csv data are ordered by timestamp
