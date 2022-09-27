@@ -33,7 +33,7 @@ public class FareManagerTest extends BaseTest {
     }
 
     @Test
-    public void getFareBetweenStop1AndStop2ForCompletedTrip() {
+    public void getFareBetweenStop1AndStop2ForCompletedTrip() throws Exception {
         mockFareData();
         when(reader.read(any(), eq(Fare.class))).thenReturn(fareData);
         fareManager.initializeFareData();
@@ -42,7 +42,7 @@ public class FareManagerTest extends BaseTest {
     }
 
     @Test
-    public void getFareBetweenStop3AndStop1ForCompletedTrip() {
+    public void getFareBetweenStop3AndStop1ForCompletedTrip() throws Exception {
         mockFareData();
         when(reader.read(any(), eq(Fare.class))).thenReturn(fareData);
         fareManager.initializeFareData();
@@ -51,7 +51,7 @@ public class FareManagerTest extends BaseTest {
     }
 
     @Test
-    public void getFareForIncompleteTrip_shouldReturnMaxFare() {
+    public void getFareForIncompleteTrip_shouldReturnMaxFare() throws Exception {
         mockFareData();
         when(reader.read(any(), eq(Fare.class))).thenReturn(fareData);
         fareManager.initializeFareData();
@@ -60,7 +60,7 @@ public class FareManagerTest extends BaseTest {
     }
 
     @Test
-    public void getFareForCancelledTrip_shouldReturnNoFare() {
+    public void getFareForCancelledTrip_shouldReturnNoFare() throws Exception {
         mockFareData();
         when(reader.read(any(), eq(Fare.class))).thenReturn(fareData);
         fareManager.initializeFareData();
@@ -69,7 +69,7 @@ public class FareManagerTest extends BaseTest {
     }
 
     @Test
-    public void getFareWhenThereAreNoFareData_shouldReturnNullAndShouldNotFail() {
+    public void getFareWhenThereAreNoFareData_shouldReturnNullAndShouldNotFail() throws Exception {
         mockFareData();
         when(reader.read(any(), eq(Fare.class))).thenReturn(new ArrayList<>());
         fareManager.initializeFareData();

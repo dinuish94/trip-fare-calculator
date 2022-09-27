@@ -55,7 +55,7 @@ public class TripFareProcessor implements CommandLineRunner {
         return tripMapper.mapTapsToTrips(taps);
     }
 
-    private List<Tap> readTapData(String tapFilePath) {
+    private List<Tap> readTapData(String tapFilePath) throws TripChargeCalculatorException {
         return tapsReader.readTaps(tapFilePath);
     }
 
@@ -63,7 +63,7 @@ public class TripFareProcessor implements CommandLineRunner {
         tripWriter.writeFile(properties.getOutput(), trips);
     }
 
-    private void initializeFareData() {
+    private void initializeFareData() throws TripChargeCalculatorException {
         LOG.info("Initializing fare data...");
         fareManager.initializeFareData();
     }

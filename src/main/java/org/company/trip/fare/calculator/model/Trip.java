@@ -1,13 +1,15 @@
 package org.company.trip.fare.calculator.model;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
+import lombok.*;
 import org.company.trip.fare.calculator.constant.TripStatus;
 
 @Builder
 @ToString
 @EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 public class Trip {
     private String started;
     private String finished;

@@ -2,6 +2,7 @@ package org.company.trip.fare.calculator.core;
 
 import org.company.trip.fare.calculator.TripFareProcessor;
 import org.company.trip.fare.calculator.constant.ConfigProperties;
+import org.company.trip.fare.calculator.exception.TripChargeCalculatorException;
 import org.company.trip.fare.calculator.model.Tap;
 import org.company.trip.fare.calculator.util.CsvFileReader;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class TapsReader {
         this.csvFileReader = csvFileReader;
     }
 
-    public List<Tap> readTaps(String tapFilePath) {
+    public List<Tap> readTaps(String tapFilePath) throws TripChargeCalculatorException {
         LOG.debug(format("Reading tap data from file %s", tapFilePath));
         return csvFileReader.read(tapFilePath, Tap.class);
     }

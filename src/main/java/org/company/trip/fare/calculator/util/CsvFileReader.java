@@ -1,6 +1,7 @@
 package org.company.trip.fare.calculator.util;
 
 import com.opencsv.bean.CsvToBeanBuilder;
+import org.company.trip.fare.calculator.exception.TripChargeCalculatorException;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -16,7 +17,7 @@ import java.util.List;
 @Component
 public class CsvFileReader<T> {
 
-    public List<T> read(String filePath, Class<? extends T> type) {
+    public List<T> read(String filePath, Class<? extends T> type) throws TripChargeCalculatorException {
         try {
             return new CsvToBeanBuilder(new BufferedReader(new FileReader(filePath)))
                     .withType(type)
@@ -24,7 +25,7 @@ public class CsvFileReader<T> {
                     .build()
                     .parse();
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new TripChargeCalculatorException(String.format("Failed to read file: %s", filePath), e);
         }
     }
 }

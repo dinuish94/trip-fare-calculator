@@ -1,5 +1,6 @@
 package org.company.trip.fare.calculator.core;
 
+import org.company.trip.fare.calculator.exception.TripChargeCalculatorException;
 import org.company.trip.fare.calculator.model.Fare;
 import org.company.trip.fare.calculator.model.FareIdentifier;
 import org.company.trip.fare.calculator.util.CsvFileReader;
@@ -31,7 +32,7 @@ public class FareManager {
         this.reader = reader;
     }
 
-    public void initializeFareData() {
+    public void initializeFareData() throws TripChargeCalculatorException {
         List<Fare> fares = readFareDataFromFile();
         populateCacheWithFareData(fares);
     }
@@ -51,7 +52,7 @@ public class FareManager {
         return maxFare.get();
     }
 
-    private List<Fare> readFareDataFromFile() {
+    private List<Fare> readFareDataFromFile() throws TripChargeCalculatorException {
         return reader.read(fareDataFilePath, Fare.class);
     }
 
