@@ -13,7 +13,7 @@ import java.util.List;
 import static java.lang.String.format;
 
 /**
- * TapsReader reads a given CSV file preconfigured in the properties file
+ * TapsReader reads a given CSV file
  * and maps it to a List of Tap objects
  */
 @Component
@@ -23,13 +23,15 @@ public class TapsReader {
 
     private ConfigProperties configProperties;
 
-    public TapsReader(ConfigProperties configProperties) {
+    private final CsvFileReader<Tap> csvFileReader;
+
+    public TapsReader(ConfigProperties configProperties, CsvFileReader<Tap> csvFileReader) {
         this.configProperties = configProperties;
+        this.csvFileReader = csvFileReader;
     }
 
-    public List<Tap> readTaps() {
-        LOG.debug(format("Reading tap data from file %s", configProperties.getInput()));
-        CsvFileReader<Tap> reader = new CsvFileReader<>();
-        return reader.read(configProperties.getInput(), Tap.class);
+    public List<Tap> readTaps(String tapFilePath) {
+        LOG.debug(format("Reading tap data from file %s", tapFilePath));
+        return csvFileReader.read(tapFilePath, Tap.class);
     }
 }

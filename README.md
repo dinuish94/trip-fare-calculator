@@ -37,7 +37,8 @@ Status
 ### How to run the application
 
 - Run `mvn clean install` in the root folder
-- Run `java -jar target/trip-fare-calculator-1.0-SNAPSHOT-jar-with-dependencies.jar` in the root folder to run the application
+- Run `mvn spring-boot:run -Dspring-boot.run.arguments=src/main/resources/taps.csv` in the root folder to run the application 
+(To give a different test file simply replace the file path  - `src/main/resources/taps.csv`)
 - Output csv can be found in the root folder as well once the application has run successfully
 
 **NOTE:**

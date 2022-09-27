@@ -12,6 +12,5 @@ import org.springframework.context.annotation.PropertySource;
 @Setter
 @Getter
 public class ConfigProperties {
-    private String input;
     private String output;
 }

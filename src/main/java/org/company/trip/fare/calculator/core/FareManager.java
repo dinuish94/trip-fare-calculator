@@ -22,7 +22,7 @@ import static org.company.trip.fare.calculator.model.FareIdentifier.createKey;
 @Component
 public class FareManager {
 
-    private static final String fareDataFileName = "fares.csv";
+    private static final String fareDataFilePath = "src/main/resources/fares.csv";
     private final Map<FareIdentifier, Double> allFares = new HashMap<>();
     private final List<String> stops = new ArrayList<>();
     private final CsvFileReader<Fare> reader;
@@ -52,7 +52,7 @@ public class FareManager {
     }
 
     private List<Fare> readFareDataFromFile() {
-        return reader.read(fareDataFileName, Fare.class);
+        return reader.read(fareDataFilePath, Fare.class);
     }
 
     private void populateCacheWithFareData(List<Fare> fares) {

@@ -44,8 +44,9 @@ public class TripFareProcessor implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws TripChargeCalculatorException {
+        String tapFilePath = args[0];
         initializeFareData();
-        List<Tap> taps = readTapData();
+        List<Tap> taps = readTapData(tapFilePath);
         List<Trip> trips = mapTapsToTrips(taps);
         writeTripData(trips);
     }
@@ -54,8 +55,8 @@ public class TripFareProcessor implements CommandLineRunner {
         return tripMapper.mapTapsToTrips(taps);
     }
 
-    private List<Tap> readTapData() {
-        return tapsReader.readTaps();
+    private List<Tap> readTapData(String tapFilePath) {
+        return tapsReader.readTaps(tapFilePath);
     }
 
     private void writeTripData(List<Trip> trips) throws TripChargeCalculatorException {
