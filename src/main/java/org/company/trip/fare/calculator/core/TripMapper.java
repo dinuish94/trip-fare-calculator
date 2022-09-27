@@ -1,12 +1,14 @@
 package org.company.trip.fare.calculator.core;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.company.trip.fare.calculator.TripFareProcessor;
 import org.company.trip.fare.calculator.constant.TapType;
 import org.company.trip.fare.calculator.constant.TripStatus;
 import org.company.trip.fare.calculator.model.Tap;
 import org.company.trip.fare.calculator.model.Trip;
 import org.company.trip.fare.calculator.model.TripsStack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,27 +18,29 @@ import java.util.Map;
 import static java.lang.String.format;
 import static org.company.trip.fare.calculator.constant.TripStatus.CANCELLED;
 import static org.company.trip.fare.calculator.constant.TripStatus.COMPLETED;
-import static org.company.trip.fare.calculator.core.TripFareCalculator.calculateTripFare;
 import static org.company.trip.fare.calculator.util.DurationCalculator.calculateDuration;
 
+/**
+ * Trip mapper transforms tap data to trips
+ * Identifying a customer by the PAN, it will trace the trips of each customer
+ *
+ */
+@Component
 public class TripMapper {
 
-    private static final Logger logger = LogManager.getLogger(TripMapper.class);
-    private static final TripMapper tripMapper = new TripMapper();
+    private static final Logger LOG = LoggerFactory.getLogger(TripFareProcessor.class);
     private static final Map<String, TripsStack> tripsByCustomer = new HashMap<>();
     private final List<Trip> trips = new ArrayList<>();
+    private final TripFareCalculator tripFareCalculator;
 
-    private TripMapper() {
-    }
-
-    public static TripMapper getTripMapper() {
-        return tripMapper;
+    public TripMapper(TripFareCalculator tripFareCalculator) {
+        this.tripFareCalculator = tripFareCalculator;
     }
 
     public List<Trip> mapTapsToTrips(List<Tap> taps) {
-        logger.debug("Mapping taps to trips...");
+        LOG.debug("Mapping taps to trips...");
         taps.forEach(tap -> {
-            logger.debug(format("Processing tap: %s", tap));
+            LOG.debug(format("Processing tap: %s", tap));
             String customer = tap.getPan();
             if (tripsByCustomer.containsKey(customer)) {
                 processCustomerTrip(tap, customer);
@@ -48,15 +52,15 @@ public class TripMapper {
         return trips;
     }
 
-    public void mapCompleteTrip(Tap start, Tap end) {
-        Double fare = calculateTripFare(start.getStopId(), end.getStopId());
+    private void mapCompleteTrip(Tap start, Tap end) {
+        Double fare = tripFareCalculator.calculateTripFare(start.getStopId(), end.getStopId());
         long duration = calculateDuration(start.getDateTimeUTC(), end.getDateTimeUTC());
         Trip trip = mapTripData(start, end, fare, duration, getTripStatus(start, end));
         trips.add(trip);
     }
 
-    public void mapIncompleteTrip(Tap start) {
-        Double fare = TripFareCalculator.calculateTripFare(start.getStopId());
+    private void mapIncompleteTrip(Tap start) {
+        Double fare = tripFareCalculator.calculateTripFare(start.getStopId());
         Trip trip = mapTripData(start, null, fare, 0, TripStatus.INCOMPLETE);
         trips.add(trip);
     }
@@ -81,13 +85,13 @@ public class TripMapper {
     }
 
     private void processCustomerTrip(Tap tap, String customer) {
-        logger.debug(format("Processing tap: %s to customer: %s", tap, customer));
+        LOG.debug(format("Processing tap: %s to customer: %s", tap, customer));
         TripsStack trips = tripsByCustomer.get(customer);
         if (TapType.ON.equals(tap.getTapType())) {
-            logger.debug(format("Pushing tap: %s to stack", tap));
+            LOG.debug(format("Pushing tap: %s to stack", tap));
             trips.push(tap);
         } else {
-            logger.debug(format("Popping tap: %s from stack to complete trip", tap));
+            LOG.debug(format("Popping tap: %s from stack to complete trip", tap));
             Tap start = trips.pop();
             mapCompleteTrip(start, tap);
         }

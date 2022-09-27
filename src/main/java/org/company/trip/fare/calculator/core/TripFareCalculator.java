@@ -1,18 +1,29 @@
 package org.company.trip.fare.calculator.core;
 
-import static org.company.trip.fare.calculator.core.FareManager.getFareManager;
+import org.springframework.stereotype.Component;
 
+/**
+ * Trip fare calculator is responsible
+ * for determining how the fare should be calculated
+ */
+@Component
 public class TripFareCalculator {
 
-    public static Double calculateTripFare(String start) {
+    private final FareManager fareManager;
+
+    public TripFareCalculator(FareManager fareManager) {
+        this.fareManager = fareManager;
+    }
+
+    public Double calculateTripFare(String start) {
         return calculateTripFare(start, null);
     }
 
-    public static Double calculateTripFare(String start, String stop) {
+    public Double calculateTripFare(String start, String stop) {
         if (stop != null) {
-            return getFareManager().getFare(start, stop);
+            return fareManager.getFare(start, stop);
         } else {
-            return getFareManager().getMaximumFareForTrip(start);
+            return fareManager.getMaximumFareForTrip(start);
         }
     }
 }

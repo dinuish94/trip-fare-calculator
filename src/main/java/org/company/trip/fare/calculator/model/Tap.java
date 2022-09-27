@@ -2,15 +2,17 @@ package org.company.trip.fare.calculator.model;
 
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvCustomBindByPosition;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.company.trip.fare.calculator.constant.TapType;
 import org.company.trip.fare.calculator.util.LocalDateConverter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class Tap {
 
     @CsvBindByPosition(position = 0)

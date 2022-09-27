@@ -1,54 +1,69 @@
 package org.company.trip.fare.calculator;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.company.trip.fare.calculator.constant.ConfigProperties;
+import org.company.trip.fare.calculator.core.FareManager;
+import org.company.trip.fare.calculator.core.TapsReader;
+import org.company.trip.fare.calculator.core.TripMapper;
 import org.company.trip.fare.calculator.exception.TripChargeCalculatorException;
 import org.company.trip.fare.calculator.model.Tap;
 import org.company.trip.fare.calculator.model.Trip;
-import org.company.trip.fare.calculator.util.ConfigReader;
 import org.company.trip.fare.calculator.util.CsvFileWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import java.util.List;
 
-import static org.company.trip.fare.calculator.constant.ConfigProperties.PROPERTY_KEY_TRIPS_FILE;
-import static org.company.trip.fare.calculator.core.FareManager.getFareManager;
-import static org.company.trip.fare.calculator.core.TapsReader.readTaps;
-import static org.company.trip.fare.calculator.core.TripMapper.getTripMapper;
+@SpringBootApplication
+@EnableConfigurationProperties
+public class TripFareProcessor implements CommandLineRunner {
 
-public class TripFareProcessor {
+    private static final Logger LOG = LoggerFactory.getLogger(TripFareProcessor.class);
+    private final ConfigProperties properties;
+    private final TapsReader tapsReader;
+    private final FareManager fareManager;
+    private final CsvFileWriter<Trip> tripWriter;
+    private final TripMapper tripMapper;
 
-    private static final Logger logger = LogManager.getLogger(TripFareProcessor.class);
+    public TripFareProcessor(ConfigProperties properties, TapsReader tapsReader, FareManager fareManager, CsvFileWriter<Trip> tripWriter, TripMapper tripMapper) {
+        this.properties = properties;
+        this.tapsReader = tapsReader;
+        this.fareManager = fareManager;
+        this.tripWriter = tripWriter;
+        this.tripMapper = tripMapper;
+    }
 
-    public static void main(String[] args) throws TripChargeCalculatorException {
-        logger.info("Starting trip fare calculation...");
-        initializeLogger();
+    public static void main(String[] args) {
+        LOG.info("Starting trip fare calculation...");
+        SpringApplication.run(TripFareProcessor.class, args);
+        LOG.info("Completed trip fare calculation...");
+    }
+
+    @Override
+    public void run(String... args) throws TripChargeCalculatorException {
         initializeFareData();
         List<Tap> taps = readTapData();
         List<Trip> trips = mapTapsToTrips(taps);
         writeTripData(trips);
-        logger.info("Completed trip fare calculation...");
     }
 
-    private static void initializeLogger() {
-        BasicConfigurator.configure();
+    private List<Trip> mapTapsToTrips(List<Tap> taps) {
+        return tripMapper.mapTapsToTrips(taps);
     }
 
-    private static List<Trip> mapTapsToTrips(List<Tap> taps) {
-        return getTripMapper().mapTapsToTrips(taps);
+    private List<Tap> readTapData() {
+        return tapsReader.readTaps();
     }
 
-    private static List<Tap> readTapData() throws TripChargeCalculatorException {
-        return readTaps();
+    private void writeTripData(List<Trip> trips) throws TripChargeCalculatorException {
+        tripWriter.writeFile(properties.getOutput(), trips);
     }
 
-    private static void writeTripData(List<Trip> trips) throws TripChargeCalculatorException {
-        String tripFileName = ConfigReader.getConfigReader().getProperty(PROPERTY_KEY_TRIPS_FILE);
-        new CsvFileWriter<Trip>().writeFile(tripFileName, trips);
-    }
-
-    private static void initializeFareData() throws TripChargeCalculatorException {
-        logger.info("Initializing fare data...");
-        getFareManager().initializeFareData();
+    private void initializeFareData() {
+        LOG.info("Initializing fare data...");
+        fareManager.initializeFareData();
     }
 }

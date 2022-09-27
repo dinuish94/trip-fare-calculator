@@ -3,23 +3,32 @@ package org.company.trip.fare.calculator.core;
 import org.company.trip.fare.calculator.model.Fare;
 import org.company.trip.fare.calculator.model.FareIdentifier;
 import org.company.trip.fare.calculator.util.CsvFileReader;
+import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.company.trip.fare.calculator.model.FareIdentifier.createKey;
 
+/**
+ * FareManager is responsible for initiating fare data
+ * and determining the fare for given stops according to that data
+ *
+ */
+@Component
 public class FareManager {
 
     private static final String fareDataFileName = "fares.csv";
-    private static final FareManager fareManager = new FareManager();
     private final Map<FareIdentifier, Double> allFares = new HashMap<>();
     private final List<String> stops = new ArrayList<>();
+    private final CsvFileReader<Fare> reader;
 
-    private FareManager() {
-    }
-
-    public static FareManager getFareManager() {
-        return fareManager;
+    public FareManager(CsvFileReader<Fare> reader) {
+        this.reader = reader;
     }
 
     public void initializeFareData() {
@@ -43,7 +52,6 @@ public class FareManager {
     }
 
     private List<Fare> readFareDataFromFile() {
-        CsvFileReader<Fare> reader = new CsvFileReader<>();
         return reader.read(fareDataFileName, Fare.class);
     }
 

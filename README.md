@@ -49,3 +49,7 @@ Status
 
 - There cannot be a Tap Type 'OFF' record without an 'ON' record
 - csv data are ordered by timestamp
+- In incomplete trips, finished time and last stop is null 
+
+### Improvements
+- Improve to list the stop the fare is calculated against in incomplete trips.

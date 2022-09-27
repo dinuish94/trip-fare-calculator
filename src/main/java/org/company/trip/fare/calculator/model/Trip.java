@@ -1,11 +1,13 @@
 package org.company.trip.fare.calculator.model;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.company.trip.fare.calculator.constant.TripStatus;
 
 @Builder
 @ToString
+@EqualsAndHashCode
 public class Trip {
     private String started;
     private String finished;
