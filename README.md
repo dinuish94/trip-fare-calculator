@@ -37,14 +37,19 @@ Status
 ### How to run the application
 
 - Run `mvn clean install` in the root folder
-- Run `mvn spring-boot:run -Dspring-boot.run.arguments=src/main/resources/taps.csv` in the root folder to run the application 
-(To give a different test file simply replace the file path  - `src/main/resources/taps.csv`)
+- Run `mvn spring-boot:run -Dspring-boot.run.arguments=src/main/resources/taps.csv` in the root folder to run the application
 - Output csv can be found in the root folder as well once the application has run successfully
 
 **NOTE:**
 
-- If new tap data are to be added, add them to the /resources/taps.csv
 - If new fare data are to be added, add them to the /resources/fares.csv
+- To input a different test file simply replace the file path  - `src/main/resources/taps.csv` in the command line arguments in the run command
+
+### Tests
+
+#### Unit tests
+
+- Run `mvn test` inside root folder to run tests
 
 ### Assumptions
 
